@@ -8,7 +8,7 @@ namespace HelloWorld.Controllers;
 public class ProductsController : ControllerBase {
     [HttpGet]
     public ActionResult<List<ProductDTO>> GetProducts(int categoryID) {
-        if (CategoryExists(categoryID, out CategoryDTO category)) { 
+        if (CategoryNotExists(categoryID, out CategoryDTO category)) { 
             return NotFound();
         }
         return Ok(category.Products);
@@ -16,7 +16,7 @@ public class ProductsController : ControllerBase {
 
     [HttpGet("{productID}")]
     public ActionResult<ProductDTO> GetProduct(int categoryID, int productID) {
-        if (CategoryExists(categoryID, out CategoryDTO category)) {
+        if (CategoryNotExists(categoryID, out CategoryDTO category)) {
             return NotFound();
         }
         ProductDTO product = category.Products.FirstOrDefault(p => p.ID == productID);
@@ -27,7 +27,7 @@ public class ProductsController : ControllerBase {
         return Ok(product);
     }
 
-    private bool CategoryExists(int categoryID, out CategoryDTO category) {
+    private bool CategoryNotExists(int categoryID, out CategoryDTO category) {
         category = MyDataStore.Categories.FirstOrDefault(c => c.ID == categoryID);
         return category == null;
     }
