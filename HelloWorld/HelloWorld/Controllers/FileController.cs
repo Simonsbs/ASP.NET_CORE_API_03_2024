@@ -34,4 +34,20 @@ public class FilesController : ControllerBase {
         byte[] data = System.IO.File.ReadAllBytes(path);
         return File(data, contentType, Path.GetFileName(path));
     }
+
+    [HttpPost]
+    public ActionResult CreateFile(IFormFile file) {
+        if (file.Length > 200000 || file.ContentType != "application/pdf") {
+            return BadRequest("File too big or not a pdf");
+        }
+
+        string filename = $"Upload_{Guid.NewGuid()}.pdf";
+        string path = Path.Combine(Directory.GetCurrentDirectory(), filename);
+
+        using (FileStream fs = new FileStream(path, FileMode.Create)) {
+            file.CopyTo(fs);
+        }
+
+        return Ok("File was uploaded as: " + filename);
+    }
 }

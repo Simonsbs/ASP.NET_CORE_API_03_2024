@@ -2,7 +2,7 @@
 
 namespace HelloWorld.Models;
 
-public class ProductForCreationDTO {
+public class ProductForUpdateDTO {
     [Required]
     [StringLength(5)]
     public string Name {

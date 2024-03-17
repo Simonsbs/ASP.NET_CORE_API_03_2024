@@ -1,8 +1,16 @@
+using HelloWorld.Controllers;
 using Microsoft.AspNetCore.StaticFiles;
+using Serilog;
 
 namespace HelloWorld;
 public class Program {
     public static void Main(string[] args) {
+        Log.Logger = new LoggerConfiguration().
+            MinimumLevel.Warning().
+            WriteTo.Console().
+            WriteTo.File("logs/shoplog.txt", rollingInterval: RollingInterval.Day).
+            CreateLogger();
+        
         var builder = WebApplication.CreateBuilder(args);
 
         // Add services to the container.
@@ -11,6 +19,8 @@ public class Program {
         // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
+
+        builder.Host.UseSerilog();
 
         builder.Services.AddProblemDetails(op => {
             op.CustomizeProblemDetails = ctx => {
