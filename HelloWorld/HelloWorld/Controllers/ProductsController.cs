@@ -8,7 +8,7 @@ namespace HelloWorld.Controllers;
 public class ProductsController : ControllerBase {
     [HttpGet]
     public ActionResult<List<ProductDTO>> GetProducts(int categoryID) {
-        if (CategoryNotExists(categoryID, out CategoryDTO category)) { 
+        if (CategoryNotExists(categoryID, out CategoryDTO category)) {
             return NotFound();
         }
         return Ok(category.Products);
@@ -23,12 +23,37 @@ public class ProductsController : ControllerBase {
         if (product == null) {
             return NotFound();
         }
-        
+
         return Ok(product);
     }
 
     private bool CategoryNotExists(int categoryID, out CategoryDTO category) {
         category = MyDataStore.Categories.FirstOrDefault(c => c.ID == categoryID);
         return category == null;
+    }
+
+    [HttpPost]
+    public ActionResult CreateProduct(int categoryID, ProductForCreationDTO product) {
+        if (CategoryNotExists(categoryID, out CategoryDTO category)) {
+            return NotFound();
+        }
+
+        int maxID = MyDataStore.Categories.
+                                SelectMany(c => c.Products).
+                                Max(p => p.ID);
+
+        ProductDTO newProduct = new ProductDTO {
+            ID = ++maxID,
+            Name = product.Name,
+            Description = product.Description,
+            Price = product.Price,
+        };
+
+        category.Products.Add(newProduct);
+
+        return CreatedAtRoute("", new {
+            categoryID,
+            productID = newProduct.ID
+        }, newProduct);
     }
 }

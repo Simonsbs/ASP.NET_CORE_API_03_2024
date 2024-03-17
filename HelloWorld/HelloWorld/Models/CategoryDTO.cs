@@ -13,5 +13,5 @@ public class CategoryDTO {
         get; set;
     }
 
-    public IEnumerable<ProductDTO> Products { get; set; } = new List<ProductDTO>();
+    public List<ProductDTO> Products { get; set; } = new List<ProductDTO>();
 }

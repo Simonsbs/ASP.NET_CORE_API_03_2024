@@ -1,3 +1,5 @@
+using Microsoft.AspNetCore.StaticFiles;
+
 namespace HelloWorld;
 public class Program {
     public static void Main(string[] args) {
@@ -9,6 +11,15 @@ public class Program {
         // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
+
+        builder.Services.AddProblemDetails(op => {
+            op.CustomizeProblemDetails = ctx => {
+                ctx.ProblemDetails.Extensions.Add("SomeData", "This is some data");
+                ctx.ProblemDetails.Extensions.Add("MachineName", Environment.MachineName);
+            };
+        });
+
+        builder.Services.AddSingleton<FileExtensionContentTypeProvider>();
 
         var app = builder.Build();
 
