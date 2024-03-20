@@ -1,5 +1,6 @@
 using HelloWorld.Contexts;
 using HelloWorld.Controllers;
+using HelloWorld.Repositories;
 using HelloWorld.Services;
 using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.EntityFrameworkCore;
@@ -39,10 +40,14 @@ public class Program {
 #else
         builder.Services.AddTransient<IMailService, RealMailService>();
 #endif
+		
+		builder.Services.AddScoped<IProductRepository, ProdcutRepository>();
 
 		builder.Services.AddDbContext<MainContext>(
 			opt => opt.UseSqlite(builder.Configuration["ConnectionStrings:Main"])
 		);
+
+		builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 		var app = builder.Build();
 
