@@ -16,6 +16,13 @@ namespace HelloWorld.Entities {
             get; set;
         } = name;
 
+		[MaxLength(500)]
+		public string? Description { get; set; }
 
-    }
+		[Required]
+		[Range(1, double.MaxValue)]
+		public double Price {
+			get; set;
+		}
+	}
 }
