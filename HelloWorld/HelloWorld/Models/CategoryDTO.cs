@@ -9,9 +9,7 @@ public class CategoryDTO {
         get; set;
     }
 
-    public int ProductCount {
-        get; set;
-    }
+    public int ProductCount => Products.Count;
 
     public List<ProductDTO> Products { get; set; }
 }

@@ -10,10 +10,3 @@ public class ProductProfile : Profile {
 			.ForMember(dest => dest.Price, opt => opt.MapFrom(src => src.ID * 2));
 	}
 }
-
-
-public class CategoryProfile : Profile {
-	public CategoryProfile() {
-		CreateMap<Category, CategoryDTO>();
-	}
-}

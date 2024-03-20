@@ -26,18 +26,30 @@ public class CategoriesController : ControllerBase {
 	}
 
 	[HttpGet]
-    public async Task<ActionResult<List<CategoryDTO>>> GetCategories() {
+	public async Task<ActionResult<List<CategoryDTO>>> GetCategories() {
 		IEnumerable<Category> categories = await _repo.GetCategoriesAsync();
 
-        return Ok(_mapper.Map<List<CategoryDTO>>(categories));
-    }
+		return Ok(_mapper.Map<List<CategoryDTO>>(categories));
+	}
 
-    [HttpGet("{id}")]
-    public ActionResult<CategoryDTO> GetCategory(int id) {
-        CategoryDTO category = MyDataStore.Categories.FirstOrDefault(c => c.ID == id);
-        if (category == null) {
-            return NotFound();
-        }
-        return Ok(category);
-    }
+	[HttpGet("{id}")]
+	public async Task<IActionResult> GetCategory(int id, bool includeProducts) {
+		Category? category = await _repo.GetCategoryAsync(id, includeProducts);
+		if (category == null) {
+			return NotFound();
+		}
+
+		if (includeProducts) {
+			return Ok(_mapper.Map<CategoryDTO>(category));
+		}
+
+		return Ok(_mapper.Map<CategoryWithNoProductsDTO>(category));
+
+
+		//CategoryDTO category = MyDataStore.Categories.FirstOrDefault(c => c.ID == id);
+		//      if (category == null) {
+		//          return NotFound();
+		//      }
+		//      return Ok(category);
+	}
 }
