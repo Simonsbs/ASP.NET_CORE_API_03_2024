@@ -12,24 +12,27 @@ namespace HelloWorld.Controllers;
 public class ProductsController : ControllerBase {
 	private ILogger<ProductsController> _logger;
 	private IMailService _mailService;
-	private readonly IProductRepository _productRepository;
+	private readonly IProductRepository _repo;
+	private readonly ICategoryRepository _categoryRepository;
 	private readonly IMapper _mapper;
 
 	public ProductsController(
 		ILogger<ProductsController> logger,
 		IMailService mailService,
 		IProductRepository productRepository,
+		ICategoryRepository categoryRepository,
 		IMapper mapper
 		) {
 		_logger = logger ?? throw new ArgumentNullException(nameof(logger));
 		_mailService = mailService ?? throw new ArgumentNullException(nameof(mailService));
-		_productRepository = productRepository ?? throw new ArgumentNullException(nameof(productRepository));
+		_repo = productRepository ?? throw new ArgumentNullException(nameof(productRepository));
+		_categoryRepository = categoryRepository ?? throw new ArgumentNullException(nameof(categoryRepository));
 		_mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
 	}
 
 	[HttpGet("all")]
 	public async Task<ActionResult<List<ProductDTO>>> GetAllProducts() {
-		IEnumerable<Product> products = await _productRepository.GetProductsAsync();
+		IEnumerable<Product> products = await _repo.GetProductsAsync();
 
 		//List<ProductDTO> result = new List<ProductDTO>();
 		//foreach (Product product in products) {
@@ -47,12 +50,18 @@ public class ProductsController : ControllerBase {
 	}
 
 	[HttpGet]
-	public ActionResult<List<ProductDTO>> GetProducts(int categoryID) {
-		if (CategoryNotExists(categoryID, out CategoryDTO category)) {
-			_logger.LogWarning($"Some one was lookg for category with id: {categoryID}");
-			return NotFound();
+	public async Task<ActionResult<List<ProductDTO>>> GetProducts(int categoryID) {
+		if (!await _categoryRepository.CategoryExistsAsync(categoryID)) {
+			return NotFound("Category not found");
 		}
-		return Ok(category.Products);
+
+		return Ok();
+		
+		//if (CategoryNotExists(categoryID, out CategoryDTO category)) {
+		//	_logger.LogWarning($"Some one was lookg for category with id: {categoryID}");
+		//	return NotFound();
+		//}
+		//return Ok(category.Products);
 	}
 
 	[HttpGet("{productID}", Name = "GetProduct")]

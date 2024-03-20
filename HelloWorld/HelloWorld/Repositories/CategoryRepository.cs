@@ -11,6 +11,10 @@ public class CategoryRepository : ICategoryRepository {
 		_context = context ?? throw new ArgumentNullException(nameof(context));
 	}
 
+	public Task<bool> CategoryExistsAsync(int categoryID) {
+		return _context.Categories.AnyAsync(c => c.ID == categoryID);
+	}
+
 	public async Task<IEnumerable<Category>> GetCategoriesAsync() {
 		return await _context.Categories.ToListAsync();
 	}
@@ -27,4 +31,6 @@ public class CategoryRepository : ICategoryRepository {
 								Where(c => c.ID == id).
 								FirstOrDefaultAsync();
 	}
+
+
 }
