@@ -12,5 +12,6 @@ namespace HelloWorld.Entities {
             get; set;
         } = name;
 
-	}
+		public List<Product> Products { get; set; }
+    }
 }

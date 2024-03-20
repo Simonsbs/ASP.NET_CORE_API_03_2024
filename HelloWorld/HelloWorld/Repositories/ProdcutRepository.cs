@@ -14,9 +14,5 @@ public class ProdcutRepository : IProductRepository {
 
 	public async Task<IEnumerable<Product>> GetProductsAsync() {
 		return await _context.Products.ToListAsync();
-	}
-
-	
-
-	
+	}	
 }

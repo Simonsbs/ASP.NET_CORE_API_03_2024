@@ -42,6 +42,7 @@ public class Program {
 #endif
 		
 		builder.Services.AddScoped<IProductRepository, ProdcutRepository>();
+		builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 
 		builder.Services.AddDbContext<MainContext>(
 			opt => opt.UseSqlite(builder.Configuration["ConnectionStrings:Main"])
