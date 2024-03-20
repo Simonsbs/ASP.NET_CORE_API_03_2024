@@ -19,10 +19,8 @@ namespace HelloWorld.Entities {
 		[MaxLength(500)]
 		public string? Description { get; set; }
 
-		[Required]
-		[Range(1, double.MaxValue)]
-		public double Price {
-			get; set;
-		}
-	}
+		Category? Category { get; set; }
+
+        public int CategoryID { get; set; }
+    }
 }
