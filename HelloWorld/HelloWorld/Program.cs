@@ -6,7 +6,7 @@ namespace HelloWorld;
 public class Program {
     public static void Main(string[] args) {
         Log.Logger = new LoggerConfiguration().
-            MinimumLevel.Warning().
+            MinimumLevel.Debug().
             WriteTo.Console().
             WriteTo.File("logs/shoplog.txt", rollingInterval: RollingInterval.Day).
             CreateLogger();
