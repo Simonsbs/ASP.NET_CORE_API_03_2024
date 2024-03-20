@@ -1,4 +1,5 @@
 ﻿using HelloWorld.Models;
+using HelloWorld.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HelloWorld.Controllers;
@@ -7,9 +8,14 @@ namespace HelloWorld.Controllers;
 [Route("api/categories/{categoryID}/products")]
 public class ProductsController : ControllerBase {
     private ILogger<ProductsController> _logger;
+    private IMailService _mailService;
 
-    public ProductsController(ILogger<ProductsController> logger) {
+    public ProductsController(
+        ILogger<ProductsController> logger,
+        IMailService mailService
+        ) {
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+        _mailService = mailService ?? throw new ArgumentNullException(nameof(mailService));
     }
 
     [HttpGet]
@@ -98,6 +104,8 @@ public class ProductsController : ControllerBase {
         }
 
         category.Products.Remove(productFromStore);
+
+        _mailService.Send("Product deleted", $"a user deleted the product {productFromStore.Name}");
 
         return NoContent();
     }

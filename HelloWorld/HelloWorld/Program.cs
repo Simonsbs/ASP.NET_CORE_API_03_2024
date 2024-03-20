@@ -1,4 +1,5 @@
 using HelloWorld.Controllers;
+using HelloWorld.Services;
 using Microsoft.AspNetCore.StaticFiles;
 using Serilog;
 
@@ -10,7 +11,7 @@ public class Program {
             WriteTo.Console().
             WriteTo.File("logs/shoplog.txt", rollingInterval: RollingInterval.Day).
             CreateLogger();
-        
+
         var builder = WebApplication.CreateBuilder(args);
 
         // Add services to the container.
@@ -31,12 +32,18 @@ public class Program {
 
         builder.Services.AddSingleton<FileExtensionContentTypeProvider>();
 
+#if DEBUG
+        builder.Services.AddTransient<IMailService, LocalMailService>();
+#else
+        builder.Services.AddTransient<IMailService, RealMailService>();
+#endif
+
         var app = builder.Build();
 
         // Configure the HTTP request pipeline.
         //if (app.Environment.IsDevelopment()) {
-            app.UseSwagger();
-            app.UseSwaggerUI();
+        app.UseSwagger();
+        app.UseSwaggerUI();
         //}
 
         app.UseHttpsRedirection();
