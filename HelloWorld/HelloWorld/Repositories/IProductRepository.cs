@@ -11,7 +11,7 @@ public interface IProductRepository {
 
 	Task DeleteProductAsync(Product product);
 
-	Task SaveAsync();
+	Task<bool> SaveAsync();
 
 	
 

@@ -28,9 +28,7 @@ public class ProdcutRepository : IProductRepository {
 		throw new NotImplementedException();
 	}
 
-
-
-	public Task SaveAsync() {
-		throw new NotImplementedException();
+	public async Task<bool> SaveAsync() {
+		return await _context.SaveChangesAsync() >= 0;
 	}
 }
