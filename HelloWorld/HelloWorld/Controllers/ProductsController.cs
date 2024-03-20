@@ -52,10 +52,14 @@ public class ProductsController : ControllerBase {
 	[HttpGet]
 	public async Task<ActionResult<List<ProductDTO>>> GetProducts(int categoryID) {
 		if (!await _categoryRepository.CategoryExistsAsync(categoryID)) {
+			_logger.LogWarning("Category not found");
 			return NotFound("Category not found");
 		}
 
-		return Ok();
+		IEnumerable<Product> products = await _repo.
+			GetProductsForCategoryAsync(categoryID);
+
+		return Ok(_mapper.Map<List<ProductDTO>>(products));
 		
 		//if (CategoryNotExists(categoryID, out CategoryDTO category)) {
 		//	_logger.LogWarning($"Some one was lookg for category with id: {categoryID}");

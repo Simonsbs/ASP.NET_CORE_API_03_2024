@@ -14,5 +14,23 @@ public class ProdcutRepository : IProductRepository {
 
 	public async Task<IEnumerable<Product>> GetProductsAsync() {
 		return await _context.Products.ToListAsync();
-	}	
+	}
+
+	public async Task<IEnumerable<Product>> GetProductsForCategoryAsync(int categoryID) {
+		return await _context.Products.Where(p => p.CategoryID == categoryID).ToListAsync();
+	}
+
+	public Task AddProductAsync(Product product) {
+		throw new NotImplementedException();
+	}
+
+	public Task DeleteProductAsync(Product product) {
+		throw new NotImplementedException();
+	}
+
+
+
+	public Task SaveAsync() {
+		throw new NotImplementedException();
+	}
 }
