@@ -1,6 +1,7 @@
 ﻿using HelloWorld.Contexts;
 using HelloWorld.Entities;
 using HelloWorld.Models;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
 
 namespace HelloWorld.Repositories;
