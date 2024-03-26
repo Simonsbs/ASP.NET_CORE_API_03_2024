@@ -11,7 +11,7 @@ public interface IProductRepository {
 
 	Task AddProductAsync(Product product, bool autosave = true);
 
-	Task DeleteProductAsync(Product product);
+	Task DeleteProductAsync(Product product, bool autosave = true);
 
 	Task<bool> SaveAsync();
 

@@ -188,20 +188,39 @@ public class ProductsController : ControllerBase {
 	}
 
 	[HttpDelete("{productID}")]
-	public ActionResult DeleteProduct(int categoryID, int productID) {
-		if (CategoryNotExists(categoryID, out CategoryDTO category)) {
+	public async Task<ActionResult> DeleteProduct(
+		int categoryID, 
+		int productID) {
+
+		if (!await _categoryRepository.CategoryExistsAsync(categoryID)) {
+			_logger.LogWarning("Category not found");
+			return NotFound("Category not found");
+		}
+
+		Product? productToDelete = await _repo.
+					GetProductForCategoryAsync(categoryID, productID);
+
+		if (productToDelete == null) {
 			return NotFound();
 		}
 
-		ProductDTO productFromStore = category.Products.FirstOrDefault(p => p.ID == productID);
-		if (productFromStore == null) {
-			return NotFound();
-		}
-
-		category.Products.Remove(productFromStore);
-
-		_mailService.Send("Product deleted", $"a user deleted the product {productFromStore.Name}");
+		await _repo.DeleteProductAsync(productToDelete);
 
 		return NoContent();
+
+		//if (CategoryNotExists(categoryID, out CategoryDTO category)) {
+		//	return NotFound();
+		//}
+
+		//ProductDTO productFromStore = category.Products.FirstOrDefault(p => p.ID == productID);
+		//if (productFromStore == null) {
+		//	return NotFound();
+		//}
+
+		//category.Products.Remove(productFromStore);
+
+		//_mailService.Send("Product deleted", $"a user deleted the product {productFromStore.Name}");
+
+		//return NoContent();
 	}
 }

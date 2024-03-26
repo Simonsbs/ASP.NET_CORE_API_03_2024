@@ -30,15 +30,20 @@ public class ProdcutRepository : IProductRepository {
 				FirstOrDefaultAsync();
 	}
 
-	public async Task AddProductAsync(Product product, bool autosave = true) {
+	public async Task AddProductAsync(Product product, 
+		bool autosave = true) {
 		await _context.Products.AddAsync(product);
 		if (autosave) {
 			await _context.SaveChangesAsync(); 
 		}
 	}
 
-	public Task DeleteProductAsync(Product product) {
-		throw new NotImplementedException();
+	public async Task DeleteProductAsync(Product product,
+		bool autosave = true) {
+		_context.Remove(product);
+		if (autosave) {
+			await _context.SaveChangesAsync();
+		}
 	}
 
 	public async Task<bool> SaveAsync() {
