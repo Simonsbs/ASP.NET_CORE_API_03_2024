@@ -17,11 +17,24 @@ public class ProdcutRepository : IProductRepository {
 	}
 
 	public async Task<IEnumerable<Product>> GetProductsForCategoryAsync(int categoryID) {
-		return await _context.Products.Where(p => p.CategoryID == categoryID).ToListAsync();
+		return await _context.Products.
+			Where(p => p.CategoryID == categoryID).
+			ToListAsync();
 	}
 
-	public Task AddProductAsync(Product product) {
-		throw new NotImplementedException();
+	public Task<Product?> GetProductForCategoryAsync(int categoryID, int productID) {
+		return _context.Products.
+			Where(p => 
+				p.CategoryID == categoryID && 
+				p.ID == productID).
+				FirstOrDefaultAsync();
+	}
+
+	public async Task AddProductAsync(Product product, bool autosave = true) {
+		await _context.Products.AddAsync(product);
+		if (autosave) {
+			await _context.SaveChangesAsync(); 
+		}
 	}
 
 	public Task DeleteProductAsync(Product product) {
@@ -31,4 +44,6 @@ public class ProdcutRepository : IProductRepository {
 	public async Task<bool> SaveAsync() {
 		return await _context.SaveChangesAsync() >= 0;
 	}
+
+
 }

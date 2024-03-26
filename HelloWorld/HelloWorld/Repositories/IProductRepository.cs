@@ -7,7 +7,9 @@ public interface IProductRepository {
 
 	Task<IEnumerable<Product>> GetProductsForCategoryAsync(int categoryID);
 
-	Task AddProductAsync(Product product);
+	Task<Product?> GetProductForCategoryAsync(int categoryID, int productID);
+
+	Task AddProductAsync(Product product, bool autosave = true);
 
 	Task DeleteProductAsync(Product product);
 

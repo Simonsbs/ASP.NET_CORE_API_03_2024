@@ -60,7 +60,7 @@ public class ProductsController : ControllerBase {
 			GetProductsForCategoryAsync(categoryID);
 
 		return Ok(_mapper.Map<List<ProductDTO>>(products));
-		
+
 		//if (CategoryNotExists(categoryID, out CategoryDTO category)) {
 		//	_logger.LogWarning($"Some one was lookg for category with id: {categoryID}");
 		//	return NotFound();
@@ -69,20 +69,33 @@ public class ProductsController : ControllerBase {
 	}
 
 	[HttpGet("{productID}", Name = "GetProduct")]
-	public ActionResult<ProductDTO> GetProduct(int categoryID, int productID) {
-		if (CategoryNotExists(categoryID, out CategoryDTO category)) {
-			_logger.LogWarning($"Some one was lookg for category with id: {categoryID}");
-			return NotFound();
+	public async Task<ActionResult<ProductDTO>> GetProduct(int categoryID, int productID) {
+		if (!await _categoryRepository.CategoryExistsAsync(categoryID)) {
+			_logger.LogWarning("Category not found");
+			return NotFound("Category not found");
 		}
-		ProductDTO product = category.Products.FirstOrDefault(p => p.ID == productID);
+
+		Product? product = await _repo.GetProductForCategoryAsync(categoryID, productID);
+
 		if (product == null) {
-			_logger.LogWarning($"Some one was lookg for product with id: {productID}");
 			return NotFound();
 		}
 
+		return Ok(_mapper.Map<ProductDTO>(product));
 
-		_logger.LogCritical($"LOOK AT ME!!!");
-		return Ok(product);
+		//if (CategoryNotExists(categoryID, out CategoryDTO category)) {
+		//	_logger.LogWarning($"Some one was lookg for category with id: {categoryID}");
+		//	return NotFound();
+		//}
+		//ProductDTO product = category.Products.FirstOrDefault(p => p.ID == productID);
+		//if (product == null) {
+		//	_logger.LogWarning($"Some one was lookg for product with id: {productID}");
+		//	return NotFound();
+		//}
+
+
+		//_logger.LogCritical($"LOOK AT ME!!!");
+		//return Ok(product);
 	}
 
 	private bool CategoryNotExists(int categoryID, out CategoryDTO category) {
@@ -91,28 +104,47 @@ public class ProductsController : ControllerBase {
 	}
 
 	[HttpPost]
-	public ActionResult CreateProduct(int categoryID, ProductForCreationDTO product) {
-		if (CategoryNotExists(categoryID, out CategoryDTO category)) {
-			return NotFound();
+	public async Task<ActionResult> CreateProduct(int categoryID, 
+		ProductForCreationDTO product) {
+
+		if (!await _categoryRepository.CategoryExistsAsync(categoryID)) {
+			_logger.LogWarning("Category not found");
+			return NotFound("Category not found");
 		}
 
-		int maxID = MyDataStore.Categories.
-								SelectMany(c => c.Products).
-								Max(p => p.ID);
+		Product productToCreate = _mapper.Map<Product>(product);
+		productToCreate.CategoryID = categoryID;
 
-		ProductDTO newProduct = new ProductDTO {
-			ID = ++maxID,
-			Name = product.Name,
-			Description = product.Description,
-			Price = product.Price,
-		};
+		await _repo.AddProductAsync(productToCreate);
 
-		category.Products.Add(newProduct);
+		// await _repo.SaveAsync();
 
 		return CreatedAtRoute("GetProduct", new {
 			categoryID,
-			productID = newProduct.ID
-		}, newProduct);
+			productID = productToCreate.ID
+		}, productToCreate);
+
+		//if (CategoryNotExists(categoryID, out CategoryDTO category)) {
+		//	return NotFound();
+		//}
+
+		//int maxID = MyDataStore.Categories.
+		//						SelectMany(c => c.Products).
+		//						Max(p => p.ID);
+
+		//ProductDTO newProduct = new ProductDTO {
+		//	ID = ++maxID,
+		//	Name = product.Name,
+		//	Description = product.Description,
+		//	Price = product.Price,
+		//};
+
+		//category.Products.Add(newProduct);
+
+		//return CreatedAtRoute("GetProduct", new {
+		//	categoryID,
+		//	productID = newProduct.ID
+		//}, newProduct);
 	}
 
 	[HttpPut("{productID}")]
