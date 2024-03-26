@@ -148,21 +148,43 @@ public class ProductsController : ControllerBase {
 	}
 
 	[HttpPut("{productID}")]
-	public ActionResult UpdateProduct(int categoryID, int productID, ProductForUpdateDTO product) {
-		if (CategoryNotExists(categoryID, out CategoryDTO category)) {
+	public async Task<ActionResult> UpdateProduct(int categoryID, 
+		int productID, 
+		ProductForUpdateDTO product) {
+
+		if (!await _categoryRepository.CategoryExistsAsync(categoryID)) {
+			_logger.LogWarning("Category not found");
+			return NotFound("Category not found");
+		}
+
+		Product? productToUpdate = await _repo.
+					GetProductForCategoryAsync(categoryID, productID);
+
+		if (productToUpdate == null) {
 			return NotFound();
 		}
 
-		ProductDTO productFromStore = category.Products.FirstOrDefault(p => p.ID == productID);
-		if (productFromStore == null) {
-			return NotFound();
-		}
+		_mapper.Map(product, productToUpdate);
 
-		productFromStore.Name = product.Name;
-		productFromStore.Description = product.Description;
-		productFromStore.Price = product.Price;
+		await _repo.SaveAsync();
 
 		return NoContent();
+
+
+		//if (CategoryNotExists(categoryID, out CategoryDTO category)) {
+		//	return NotFound();
+		//}
+
+		//ProductDTO productFromStore = category.Products.FirstOrDefault(p => p.ID == productID);
+		//if (productFromStore == null) {
+		//	return NotFound();
+		//}
+
+		//productFromStore.Name = product.Name;
+		//productFromStore.Description = product.Description;
+		//productFromStore.Price = product.Price;
+
+		//return NoContent();
 	}
 
 	[HttpDelete("{productID}")]
