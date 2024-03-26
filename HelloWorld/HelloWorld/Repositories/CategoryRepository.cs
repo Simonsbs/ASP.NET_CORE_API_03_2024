@@ -19,13 +19,27 @@ public class CategoryRepository : ICategoryRepository {
 		return await _context.Categories.ToListAsync();
 	}
 
-	public async Task<IEnumerable<Category>> GetCategoriesAsync(string? name) {
+	public async Task<IEnumerable<Category>> GetCategoriesAsync(
+		string? name, 
+		string? searchQuery		
+		) {
+		
 		IQueryable<Category> categories =
 			_context.Categories as IQueryable<Category>;
 
 		if (!string.IsNullOrWhiteSpace(name)) {
 			name = name.Trim();
 			categories = categories.Where(c => c.Name == name);
+		}
+
+		if (!string.IsNullOrWhiteSpace(searchQuery)) {
+			searchQuery = searchQuery.Trim();
+
+			categories = categories.
+				Where(c => 
+					c.Name.Contains(
+							searchQuery)
+					);
 		}
 
 		return await categories.ToListAsync();
