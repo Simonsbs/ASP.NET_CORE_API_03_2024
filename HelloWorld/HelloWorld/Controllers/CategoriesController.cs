@@ -14,6 +14,8 @@ public class CategoriesController : ControllerBase {
 	private ILogger<CategoriesController> _logger;
 	private readonly ICategoryRepository _repo;
 	private readonly IMapper _mapper;
+	private const int maxPageSize = 10;
+
 
 	public CategoriesController(
 		ILogger<CategoriesController> logger,
@@ -28,16 +30,26 @@ public class CategoriesController : ControllerBase {
 	[HttpGet]
 	public async Task<ActionResult<List<CategoryDTO>>> GetCategories(
 		string? name,
-		string? searchQuery
+		string? searchQuery,
+		int pageNumber = 1,
+		int pageSize = maxPageSize
 		) {
-		IEnumerable<Category> categories;
-		if (string.IsNullOrWhiteSpace(name) && string.IsNullOrWhiteSpace(searchQuery)) {
-			categories = await _repo.GetCategoriesAsync();
-		} else {
-			categories = await _repo.GetCategoriesAsync(name, searchQuery);
+
+		if (pageSize > maxPageSize) {
+			pageSize = maxPageSize;
 		}
 
-
+		IEnumerable<Category> categories;
+		/*if (string.IsNullOrWhiteSpace(name) && 
+			string.IsNullOrWhiteSpace(searchQuery)) {
+			categories = await _repo.GetCategoriesAsync();
+		} else {*/
+			categories = await _repo.GetCategoriesAsync(
+				name, 
+				searchQuery, 
+				pageNumber,
+				pageSize);
+		//}
 
 		return Ok(_mapper.Map<List<CategoryDTO>>(categories));
 	}

@@ -20,10 +20,12 @@ public class CategoryRepository : ICategoryRepository {
 	}
 
 	public async Task<IEnumerable<Category>> GetCategoriesAsync(
-		string? name, 
-		string? searchQuery		
+		string? name,
+		string? searchQuery,
+		int pageNumber,
+		int pageSize
 		) {
-		
+
 		IQueryable<Category> categories =
 			_context.Categories as IQueryable<Category>;
 
@@ -36,11 +38,16 @@ public class CategoryRepository : ICategoryRepository {
 			searchQuery = searchQuery.Trim();
 
 			categories = categories.
-				Where(c => 
+				Where(c =>
 					c.Name.Contains(
 							searchQuery)
 					);
 		}
+
+		categories = categories.
+			OrderBy(c => c.ID).
+			Skip(pageSize * (pageNumber - 1)).
+			Take(pageSize);
 
 		return await categories.ToListAsync();
 	}
