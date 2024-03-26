@@ -19,6 +19,18 @@ public class CategoryRepository : ICategoryRepository {
 		return await _context.Categories.ToListAsync();
 	}
 
+	public async Task<IEnumerable<Category>> GetCategoriesAsync(string? name) {
+		IQueryable<Category> categories =
+			_context.Categories as IQueryable<Category>;
+
+		if (!string.IsNullOrWhiteSpace(name)) {
+			name = name.Trim();
+			categories = categories.Where(c => c.Name == name);
+		}
+
+		return await categories.ToListAsync();
+	}
+
 	public async Task<Category?> GetCategoryAsync(int id, bool includeProducts) {
 		if (includeProducts) {
 			return await _context.Categories.

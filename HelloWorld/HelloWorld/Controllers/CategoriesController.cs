@@ -26,8 +26,15 @@ public class CategoriesController : ControllerBase {
 	}
 
 	[HttpGet]
-	public async Task<ActionResult<List<CategoryDTO>>> GetCategories() {
-		IEnumerable<Category> categories = await _repo.GetCategoriesAsync();
+	public async Task<ActionResult<List<CategoryDTO>>> GetCategories(string? name) {
+		IEnumerable<Category> categories;
+		if (name == null) {
+			categories = await _repo.GetCategoriesAsync();
+		} else {
+			categories = await _repo.GetCategoriesAsync(name);
+		}
+		
+		
 
 		return Ok(_mapper.Map<List<CategoryDTO>>(categories));
 	}
