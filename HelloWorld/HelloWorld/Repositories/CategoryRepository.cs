@@ -1,5 +1,6 @@
 ﻿using HelloWorld.Contexts;
 using HelloWorld.Entities;
+using HelloWorld.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace HelloWorld.Repositories;
@@ -19,7 +20,7 @@ public class CategoryRepository : ICategoryRepository {
 		return await _context.Categories.ToListAsync();
 	}
 
-	public async Task<IEnumerable<Category>> GetCategoriesAsync(
+	public async Task<(IEnumerable<Category>, PagingMetaData)> GetCategoriesAsync(
 		string? name,
 		string? searchQuery,
 		int pageNumber,
@@ -44,12 +45,21 @@ public class CategoryRepository : ICategoryRepository {
 					);
 		}
 
+		int totalCount = await categories.CountAsync();
+
+		PagingMetaData meta = new PagingMetaData {
+			TotalItemCount = totalCount,
+			PageNumber = pageNumber,
+			PageSize = pageSize
+		};
+
 		categories = categories.
 			OrderBy(c => c.ID).
 			Skip(pageSize * (pageNumber - 1)).
 			Take(pageSize);
 
-		return await categories.ToListAsync();
+
+		return (await categories.ToListAsync(), meta);
 	}
 
 	public async Task<Category?> GetCategoryAsync(int id, bool includeProducts) {

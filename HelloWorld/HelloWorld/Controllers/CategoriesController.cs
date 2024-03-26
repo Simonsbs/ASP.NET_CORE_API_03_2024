@@ -39,17 +39,27 @@ public class CategoriesController : ControllerBase {
 			pageSize = maxPageSize;
 		}
 
-		IEnumerable<Category> categories;
-		/*if (string.IsNullOrWhiteSpace(name) && 
+		/*IEnumerable<Category> categories;
+		if (string.IsNullOrWhiteSpace(name) && 
 			string.IsNullOrWhiteSpace(searchQuery)) {
 			categories = await _repo.GetCategoriesAsync();
-		} else {*/
+		} else {
 			categories = await _repo.GetCategoriesAsync(
 				name, 
 				searchQuery, 
 				pageNumber,
 				pageSize);
-		//}
+		}*/
+
+		var (categories, meta) = await _repo.GetCategoriesAsync(
+				name,
+				searchQuery,
+				pageNumber,
+				pageSize);
+
+		Response.Headers.Add("X-PageNumber", meta.PageNumber.ToString());
+		Response.Headers.Add("X-PageSize", meta.PageSize.ToString());
+		Response.Headers.Add("X-TotalItemCount", meta.TotalItemCount.ToString());
 
 		return Ok(_mapper.Map<List<CategoryDTO>>(categories));
 	}
