@@ -112,7 +112,7 @@ public class Program {
 				Description = "Enter a valid token to access the API"
 			});
 
-			o.AddSecurityRequirement(new() {
+			o.AddSecurityRequirement(new () {
 				{
 					new() {
 						Reference = new OpenApiReference {
@@ -122,8 +122,7 @@ public class Program {
 					},
 					new List<string>()
 				}
-			})
-			;
+			});
 		});
 
 
