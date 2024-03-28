@@ -54,7 +54,7 @@ public class LoginController : ControllerBase {
 			_config["Authentication:Audience"],
 			new List<Claim>() {
 				new Claim ("sub", user.ID.ToString()),
-				new Claim("auth", "0"),//user.AutherizationLevel.ToString()),
+				new Claim("auth", user.AutherizationLevel.ToString()),
 				new Claim("user_name", user.Username),
 				// new Claim("password", user.Password) // DONT DO THIS!!!!
 				new Claim("allowed_category", "1")
