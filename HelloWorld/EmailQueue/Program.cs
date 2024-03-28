@@ -1,6 +1,7 @@
 
 using EmailQueue.Contexts;
 using EmailQueue.Repositories;
+using EmailQueue.Services;
 using Microsoft.EntityFrameworkCore;
 
 namespace EmailQueue;
@@ -24,6 +25,10 @@ public class Program {
 		builder.Services.AddScoped<IEmailsRepository, EmailsRepository>();
 
 		builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
+		builder.Services.AddTransient<IMailService, MailTrapMailService>();
+
+		builder.Services.AddHostedService<EmailBackgroundService>();
 
 		var app = builder.Build();
 
