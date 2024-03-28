@@ -9,6 +9,7 @@ using HelloWorld.Services;
 using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 using Serilog;
 
 namespace HelloWorld;
@@ -92,11 +93,6 @@ public class Program {
 			.GetRequiredService<IApiVersionDescriptionProvider>();
 
 		builder.Services.AddSwaggerGen(o => {
-			var file = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
-			var path = Path.Combine(AppContext.BaseDirectory, file);
-
-			o.IncludeXmlComments(path);
-
 			foreach (var desc in apiProvider.ApiVersionDescriptions) {
 				o.SwaggerDoc($"{desc.GroupName}", new() {
 					Title = "This is my cool API",
@@ -105,8 +101,29 @@ public class Program {
 				});
 			}
 
+			var file = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+			var path = Path.Combine(AppContext.BaseDirectory, file);
 
+			o.IncludeXmlComments(path);
 
+			o.AddSecurityDefinition("MyAPIAuth", new() {
+				Type = SecuritySchemeType.Http,
+				Scheme = "Bearer",
+				Description = "Enter a valid token to access the API"
+			});
+
+			o.AddSecurityRequirement(new() {
+				{
+					new() {
+						Reference = new OpenApiReference {
+							Type = ReferenceType.SecurityScheme,
+							Id = "MyAPIAuth"
+						}
+					},
+					new List<string>()
+				}
+			})
+			;
 		});
 
 

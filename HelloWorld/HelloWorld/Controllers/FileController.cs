@@ -7,7 +7,7 @@ namespace HelloWorld.Controllers;
 
 [ApiController]
 [Route("api/v{version:ApiVersion}/files")]
-//[Authorize]
+[Authorize]
 public class FilesController : ControllerBase {
     FileExtensionContentTypeProvider _extProvider;
     public FilesController(FileExtensionContentTypeProvider extProvider) {
