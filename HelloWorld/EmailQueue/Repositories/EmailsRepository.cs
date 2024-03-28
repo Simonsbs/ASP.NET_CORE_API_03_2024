@@ -5,7 +5,7 @@ using SQLitePCL;
 
 namespace EmailQueue.Repositories;
 
-public class EmailsRepository {
+public class EmailsRepository : IEmailsRepository {
 	private readonly EmailContext _context;
 
 	public EmailsRepository(EmailContext context) {
