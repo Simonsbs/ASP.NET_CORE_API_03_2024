@@ -6,7 +6,6 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <UserSecretsId>62601637-0ef2-423c-8d48-fba4856e88ba</UserSecretsId>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
-    <DocumentationFile>HelloWorld.xml</DocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>

@@ -1,4 +1,7 @@
+using System.Reflection;
 using System.Text;
+using Asp.Versioning;
+using Asp.Versioning.ApiExplorer;
 using HelloWorld.Contexts;
 using HelloWorld.Controllers;
 using HelloWorld.Repositories;
@@ -24,7 +27,6 @@ public class Program {
 		builder.Services.AddControllers();
 		// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 		builder.Services.AddEndpointsApiExplorer();
-		builder.Services.AddSwaggerGen();
 
 		builder.Host.UseSerilog();
 
@@ -63,8 +65,9 @@ public class Program {
 					ValidIssuer = builder.Configuration["Authentication:Issuer"],
 					ValidAudience = builder.Configuration["Authentication:Audience"],
 					IssuerSigningKey = new SymmetricSecurityKey(
-						Encoding.UTF8.
-						GetBytes(builder.Configuration["Authentication:SecretKey"])
+						//Encoding.UTF8.
+						//GetBytes(builder.Configuration["Authentication:SecretKey"])
+						Convert.FromBase64String(builder.Configuration["Authentication:SecretKey"])
 					)
 				};
 			});
@@ -76,12 +79,50 @@ public class Program {
 			});
 		});
 
+		builder.Services.AddApiVersioning(o => {
+			o.ReportApiVersions = true;
+			o.AssumeDefaultVersionWhenUnspecified = true;
+			o.DefaultApiVersion = new ApiVersion(1, 0);
+		}).AddMvc()
+		.AddApiExplorer(o => {
+			o.SubstituteApiVersionInUrl = true;
+		});
+
+		var apiProvider = builder.Services.BuildServiceProvider()
+			.GetRequiredService<IApiVersionDescriptionProvider>();
+
+		builder.Services.AddSwaggerGen(o => {
+			var file = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+			var path = Path.Combine(AppContext.BaseDirectory, file);
+
+			o.IncludeXmlComments(path);
+
+			foreach (var desc in apiProvider.ApiVersionDescriptions) {
+				o.SwaggerDoc($"{desc.GroupName}", new() {
+					Title = "This is my cool API",
+					Version = desc.ApiVersion.ToString(),
+					Description = "This api is for getting categories and products"
+				});
+			}
+
+
+
+		});
+
+
 		var app = builder.Build();
 
 		// Configure the HTTP request pipeline.
 		//if (app.Environment.IsDevelopment()) {
 		app.UseSwagger();
-		app.UseSwaggerUI();
+		app.UseSwaggerUI(o => {
+			var descriptions = app.DescribeApiVersions();
+
+			foreach (var desc in descriptions) {
+				o.SwaggerEndpoint($"/swagger/{desc.GroupName}/swagger.json",
+					desc.GroupName.ToUpper());
+			}
+		});
 		//}
 
 		app.UseHttpsRedirection();

@@ -1,0 +1,77 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>HelloWorld</name>
+    </assembly>
+    <members>
+        <member name="M:HelloWorld.Controllers.CategoriesController.GetCategories(System.String,System.String,System.Int32,System.Int32)">
+            <summary>
+            Get all the categories
+            </summary>
+            <param name="name">filter the results by name of category</param>
+            <param name="searchQuery">seaarch the results for a phrase</param>
+            <param name="pageNumber">the page number top return (default 1)</param>
+            <param name="pageSize">the size of the page to return (default 10)</param>
+            <returns>the resulting list of categories by page</returns>
+        </member>
+        <member name="M:HelloWorld.Controllers.CategoriesController.GetCategory(System.Int32,System.Boolean)">
+            <summary>
+            Get a single category by ID
+            </summary>
+            <param name="id">the id of the catgegory to return</param>
+            <param name="includeProducts">a flag that indicates if we want the products returned in category object</param>
+            <returns>A category</returns>
+            <response code="200">A valid category with the given ID</response>
+            <response code="403">User is forbiden, does not have allowed_category claim</response>
+            <response code="404">No category with the given id was found</response>
+        </member>
+        <member name="T:HelloWorld.Migrations.initDB">
+            <inheritdoc />
+        </member>
+        <member name="M:HelloWorld.Migrations.initDB.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:HelloWorld.Migrations.initDB.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:HelloWorld.Migrations.initDB.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="T:HelloWorld.Migrations.addedDescriptionAndPrice">
+            <inheritdoc />
+        </member>
+        <member name="M:HelloWorld.Migrations.addedDescriptionAndPrice.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:HelloWorld.Migrations.addedDescriptionAndPrice.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:HelloWorld.Migrations.addedDescriptionAndPrice.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="T:HelloWorld.Migrations.seedData">
+            <inheritdoc />
+        </member>
+        <member name="M:HelloWorld.Migrations.seedData.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:HelloWorld.Migrations.seedData.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:HelloWorld.Migrations.seedData.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="T:HelloWorld.Migrations.AddUsers">
+            <inheritdoc />
+        </member>
+        <member name="M:HelloWorld.Migrations.AddUsers.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:HelloWorld.Migrations.AddUsers.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:HelloWorld.Migrations.AddUsers.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
+            <inheritdoc />
+        </member>
+    </members>
+</doc>

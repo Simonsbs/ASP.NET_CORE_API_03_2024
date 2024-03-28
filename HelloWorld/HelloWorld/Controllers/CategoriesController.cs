@@ -1,4 +1,5 @@
 ﻿using System.Xml.Linq;
+using Asp.Versioning;
 using AutoMapper;
 using HelloWorld.Entities;
 using HelloWorld.Models;
@@ -10,9 +11,12 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace HelloWorld.Controllers;
 
+
 [ApiController]
-[Route("api/categories")]
-[Authorize]
+[Route("api/v{version:ApiVersion}/categories")]
+[ApiVersion(1)]
+[ApiVersion(2)]
+//[Authorize]
 public class CategoriesController : ControllerBase {
 	private ILogger<CategoriesController> _logger;
 	private readonly ICategoryRepository _repo;
@@ -30,8 +34,16 @@ public class CategoriesController : ControllerBase {
 		_mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
 	}
 
+	/// <summary>
+	/// Get all the categories
+	/// </summary>
+	/// <param name="name">filter the results by name of category</param>
+	/// <param name="searchQuery">seaarch the results for a phrase</param>
+	/// <param name="pageNumber">the page number top return (default 1)</param>
+	/// <param name="pageSize">the size of the page to return (default 10)</param>
+	/// <returns>the resulting list of categories by page</returns>
 	[HttpGet]
-	[Authorize(Policy = "IsAdmin")]
+	//[Authorize(Policy = "IsAdmin")]
 	public async Task<ActionResult<List<CategoryDTO>>> GetCategories(
 		string? name,
 		string? searchQuery,
@@ -69,7 +81,19 @@ public class CategoriesController : ControllerBase {
 		return Ok(_mapper.Map<List<CategoryDTO>>(categories));
 	}
 
+	/// <summary>
+	/// Get a single category by ID
+	/// </summary>
+	/// <param name="id">the id of the catgegory to return</param>
+	/// <param name="includeProducts">a flag that indicates if we want the products returned in category object</param>
+	/// <returns>A category</returns>
+	/// <response code="200">A valid category with the given ID</response>
+	/// <response code="403">User is forbiden, does not have allowed_category claim</response>
+	/// <response code="404">No category with the given id was found</response>
 	[HttpGet("{id}")]
+	[ProducesResponseType(StatusCodes.Status200OK)]
+	[ProducesResponseType(StatusCodes.Status403Forbidden)]
+	[ProducesResponseType(StatusCodes.Status404NotFound)]
 	public async Task<IActionResult> GetCategory(int id, bool includeProducts) {
 
 		if (User.Claims.

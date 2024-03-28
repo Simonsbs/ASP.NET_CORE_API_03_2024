@@ -1,12 +1,13 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Asp.Versioning;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.StaticFiles;
 
 namespace HelloWorld.Controllers;
 
 [ApiController]
-[Route("api/files")]
-[Authorize]
+[Route("api/v{version:ApiVersion}/files")]
+//[Authorize]
 public class FilesController : ControllerBase {
     FileExtensionContentTypeProvider _extProvider;
     public FilesController(FileExtensionContentTypeProvider extProvider) {
@@ -14,6 +15,7 @@ public class FilesController : ControllerBase {
     }
 
     [HttpGet("{fileID}")]
+    [ApiVersion(0.1, Deprecated = true)]
     public ActionResult GetFile(int fileID) {
         string path = string.Empty;
         switch (fileID) {

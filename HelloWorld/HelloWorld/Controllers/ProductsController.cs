@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using Asp.Versioning;
+using AutoMapper;
 using HelloWorld.Entities;
 using HelloWorld.Models;
 using HelloWorld.Repositories;
@@ -9,8 +10,9 @@ using Microsoft.AspNetCore.Mvc;
 namespace HelloWorld.Controllers;
 
 [ApiController]
-[Route("api/categories/{categoryID}/products")]
-[Authorize]
+[Route("api/v{version:ApiVersion}/categories/{categoryID}/products")]
+[ApiVersion(2)]
+//[Authorize]
 public class ProductsController : ControllerBase {
 	private ILogger<ProductsController> _logger;
 	private IMailService _mailService;

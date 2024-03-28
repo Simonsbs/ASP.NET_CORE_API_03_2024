@@ -11,7 +11,7 @@ using Microsoft.IdentityModel.Tokens;
 namespace HelloWorld.Controllers;
 
 [ApiController]
-[Route("api/login")]
+[Route("api/v{version:ApiVersion}/login")]
 public class LoginController : ControllerBase {
 	private ILogger<LoginController> _logger;
 	private readonly IUserRepository _repo;
@@ -39,9 +39,9 @@ public class LoginController : ControllerBase {
 		}
 
 		var key = new SymmetricSecurityKey(
-			//Convert.FromBase64String(_config["Authentication:SecretKey"])
-			Encoding.UTF8.
-			GetBytes(_config["Authentication:SecretKey"])
+			Convert.FromBase64String(_config["Authentication:SecretKey"])
+			//Encoding.UTF8.
+			//GetBytes(_config["Authentication:SecretKey"])
 		);
 
 		var creds = new SigningCredentials(
