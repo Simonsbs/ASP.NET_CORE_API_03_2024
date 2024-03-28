@@ -1,5 +1,6 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using System.Text;
 using AutoMapper;
 using HelloWorld.Entities;
 using HelloWorld.Models;
@@ -38,7 +39,8 @@ public class LoginController : ControllerBase {
 		}
 
 		var key = new SymmetricSecurityKey(
-			Convert.FromBase64String(_config["Authentication:SecretKey"])
+			//Convert.FromBase64String(_config["Authentication:SecretKey"])
+			Encoding.UTF8.GetBytes(_config["Authentication:SecretKey"])
 		);
 
 		var creds = new SigningCredentials(
