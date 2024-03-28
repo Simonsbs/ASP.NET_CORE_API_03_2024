@@ -1,10 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.StaticFiles;
 
 namespace HelloWorld.Controllers;
 
 [ApiController]
 [Route("api/files")]
+[Authorize]
 public class FilesController : ControllerBase {
     FileExtensionContentTypeProvider _extProvider;
     public FilesController(FileExtensionContentTypeProvider extProvider) {

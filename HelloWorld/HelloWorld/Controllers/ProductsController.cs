@@ -3,12 +3,14 @@ using HelloWorld.Entities;
 using HelloWorld.Models;
 using HelloWorld.Repositories;
 using HelloWorld.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HelloWorld.Controllers;
 
 [ApiController]
 [Route("api/categories/{categoryID}/products")]
+[Authorize]
 public class ProductsController : ControllerBase {
 	private ILogger<ProductsController> _logger;
 	private IMailService _mailService;

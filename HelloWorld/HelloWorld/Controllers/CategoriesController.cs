@@ -1,8 +1,10 @@
-﻿using AutoMapper;
+﻿using System.Xml.Linq;
+using AutoMapper;
 using HelloWorld.Entities;
 using HelloWorld.Models;
 using HelloWorld.Repositories;
 using HelloWorld.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
@@ -10,6 +12,7 @@ namespace HelloWorld.Controllers;
 
 [ApiController]
 [Route("api/categories")]
+[Authorize]
 public class CategoriesController : ControllerBase {
 	private ILogger<CategoriesController> _logger;
 	private readonly ICategoryRepository _repo;
@@ -28,12 +31,14 @@ public class CategoriesController : ControllerBase {
 	}
 
 	[HttpGet]
+	[Authorize(Policy = "IsAdmin")]
 	public async Task<ActionResult<List<CategoryDTO>>> GetCategories(
 		string? name,
 		string? searchQuery,
 		int pageNumber = 1,
 		int pageSize = maxPageSize
 		) {
+
 
 		if (pageSize > maxPageSize) {
 			pageSize = maxPageSize;
@@ -66,6 +71,14 @@ public class CategoriesController : ControllerBase {
 
 	[HttpGet("{id}")]
 	public async Task<IActionResult> GetCategory(int id, bool includeProducts) {
+
+		if (User.Claims.
+			FirstOrDefault(c => c.Type == "allowed_category")?.
+			Value != id.ToString()) {
+
+			return Forbid();
+		}
+
 		Category? category = await _repo.GetCategoryAsync(id, includeProducts);
 		if (category == null) {
 			return NotFound();

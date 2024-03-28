@@ -1,9 +1,11 @@
+using System.Text;
 using HelloWorld.Contexts;
 using HelloWorld.Controllers;
 using HelloWorld.Repositories;
 using HelloWorld.Services;
 using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using Serilog;
 
 namespace HelloWorld;
@@ -40,7 +42,7 @@ public class Program {
 #else
         builder.Services.AddTransient<IMailService, RealMailService>();
 #endif
-		
+
 		builder.Services.AddScoped<IProductRepository, ProdcutRepository>();
 		builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 		builder.Services.AddScoped<IUserRepository, UserRepository>();
@@ -51,6 +53,29 @@ public class Program {
 
 		builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
+		builder.Services.AddAuthentication("Bearer")
+			.AddJwtBearer(o => {
+				o.TokenValidationParameters = new() {
+					ValidateIssuer = true,
+					ValidateAudience = true,
+					ValidateIssuerSigningKey = true,
+
+					ValidIssuer = builder.Configuration["Authentication:Issuer"],
+					ValidAudience = builder.Configuration["Authentication:Audience"],
+					IssuerSigningKey = new SymmetricSecurityKey(
+						Encoding.UTF8.
+						GetBytes(builder.Configuration["Authentication:SecretKey"])
+					)
+				};
+			});
+
+		builder.Services.AddAuthorization(o => {
+			o.AddPolicy("IsAdmin", p => {
+				p.RequireAuthenticatedUser();
+				p.RequireClaim("auth", "10");
+			});
+		});
+
 		var app = builder.Build();
 
 		// Configure the HTTP request pipeline.
@@ -60,6 +85,8 @@ public class Program {
 		//}
 
 		app.UseHttpsRedirection();
+
+		app.UseAuthentication();
 
 		app.UseAuthorization();
 
