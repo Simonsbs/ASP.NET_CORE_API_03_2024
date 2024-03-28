@@ -1,6 +1,7 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using Asp.Versioning;
 using AutoMapper;
 using HelloWorld.Entities;
 using HelloWorld.Models;
@@ -12,6 +13,8 @@ namespace HelloWorld.Controllers;
 
 [ApiController]
 [Route("api/v{version:ApiVersion}/login")]
+[ApiVersion(1)]
+[ApiVersion(2)]
 public class LoginController : ControllerBase {
 	private ILogger<LoginController> _logger;
 	private readonly IUserRepository _repo;

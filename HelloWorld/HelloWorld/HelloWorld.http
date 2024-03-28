@@ -1,0 +1,14 @@
+﻿@HelloWorld_HostAddress = https://localhost:7295
+
+POST {{HelloWorld_HostAddress}}/api/v1/login
+Content-Type: application/json
+
+{
+  //LoginRequestDTO
+}
+
+###
+
+GET {{HelloWorld_HostAddress}}/api/v2/categories?name=string&searchQuery=string
+
+###

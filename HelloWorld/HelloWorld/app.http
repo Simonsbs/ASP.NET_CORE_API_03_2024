@@ -1,0 +1,30 @@
+# For more info on HTTP files go to https://aka.ms/vs/httpfile
+@schema=https
+@host=localhost
+@port=7295
+@version=2
+@token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwiYXV0aCI6IjEwIiwidXNlcl9uYW1lIjoiU2ltb24iLCJhbGxvd2VkX2NhdGVnb3J5IjoiMSIsIm5iZiI6MTcxMTYyODM2OCwiZXhwIjoxNzExNjMxOTY4LCJpc3MiOiJodHRwczovL2xvY2FsaG9zdDo3Mjk1IiwiYXVkIjoiTXlBUEkifQ._mLE5tVFLNRg0EEd7-VDIx6r9HdIEvFZoHfKUFpuX0o
+
+GET {{schema}}://{{host}}:{{port}}/api/v{{version}}/categories
+
+###
+POST {{schema}}://{{host}}:{{port}}/api/v{{version}}/categories/1/products/
+Authorization: Bearer {{token}}
+Accept: application/json
+Content-Type: application/json
+
+{
+  "name": "new product",
+  "description": "a new product",
+  "price": 100
+}
+
+###
+POST {{schema}}://{{host}}:{{port}}/api/v{{version}}/login/
+Accept: application/json
+Content-Type: application/json
+
+{
+  "username": "Simon",
+  "password": "1234"
+}

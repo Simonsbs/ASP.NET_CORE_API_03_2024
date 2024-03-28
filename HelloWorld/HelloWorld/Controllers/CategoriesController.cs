@@ -16,7 +16,7 @@ namespace HelloWorld.Controllers;
 [Route("api/v{version:ApiVersion}/categories")]
 [ApiVersion(1)]
 [ApiVersion(2)]
-[Authorize]
+//[Authorize]
 public class CategoriesController : ControllerBase {
 	private ILogger<CategoriesController> _logger;
 	private readonly ICategoryRepository _repo;
